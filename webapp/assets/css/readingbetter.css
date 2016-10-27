@@ -1,0 +1,132 @@
+*				{ margin:0; padding:0 }
+body			{ font:13px "맑은 고딕", 돋움, 굴림; text-align:center; }
+html, body		{ height :100% !important;}
+ul, ol			{ list-style-type: none }
+
+#header {
+	position: relative;
+	z-index: 20;
+	height: auto;
+	background-color: #B6E1EA;
+	padding: 10px;
+	background-image:
+		url("http://ec2-52-34-170-68.us-west-2.compute.amazonaws.com/images/design/bg_header.png");
+	background-repeat: repeat;
+	margin: 0px;
+}
+
+#wrap {
+	overflow: hidden;
+	position: relative;
+	width: 100%;
+	min-height: 700px;
+	padding-bottom: 20px;
+}
+
+#menu {
+	width: 15%;
+	float: left;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	bottom: 0px;
+	background-color:#D9F0F4;
+	font-size:15px;
+	padding: 10px;
+}
+
+#cont {
+	margin-left: 15%;
+	display: block;
+}
+
+.cont-box {
+	background-color: #ffff00;
+}
+
+#footer {
+	position: relative;
+	clear: both;
+	width: 100%;
+	height: 60px;
+	background-color: #F3FAFB;
+}
+
+#basic-menu {
+	width: 90%;
+	margin: 10px auto;
+	margin-bottom: 30px;
+}
+
+.small-menu,
+.menu-title {
+   text-align: right;
+   margin: 20px;
+   font-size: 1.25em;
+}
+
+.small-menu a {
+   font-weight: bold;
+   text-decoration: underline;
+}
+
+.menu-title {
+   text-align: left;
+   font-weight: bold;
+}
+
+/* header */
+div#header	img		{ width: 175px; line-height:70px; margin:0; color:#79B30B; float: left; }
+div#header	li		{ float:right }
+div#header	a 		{ color:#4F4F4F; font-weight:bold; margin-left:10px; text-decoration:none; }
+div#header #logo {
+	width: 150px;
+	float: left top;
+}
+div#header #anim {
+	width: 100px;
+}
+div#header .tbl-category {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* navigation */
+div#menu ul   { width:100%;}
+div#menu li   { width:100%; background-color:#D9F0F4; border:1px solid #DADADA;}
+div#menu li a   { display:block; color:#4F4F4F; width:100%; padding:5px 10px;}
+div#menu li:hover { background-color:#F7FCFD; }
+div#menu p#category {
+   width: 100%;
+   text-align: left;
+   font-size: 1.5em;
+   margin: 10px 0;
+   color: #f55;
+}
+div#menu a.selected-navi {
+	background-color:#F7FCFD;
+}
+
+/* 검색 */
+#search_form {
+	width:100%;
+	text-align:center;
+	margin:20px;
+}
+
+input[type="text"]	{
+	padding:5px; 
+	border:1px solid #aaa
+}
+
+input[type="submit"] {
+	padding:5px; 
+	border:1px solid #aaa;
+	background-color: #aaa;
+	font-weight:bold;
+	color:#fff;
+}
+
+input#kwd	{
+	width:250px;
+}

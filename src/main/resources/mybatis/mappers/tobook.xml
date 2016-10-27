@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="tobook">
+
+	<insert id="insertToBook" parameterType="tobookvo">
+		<![CDATA[
+			insert into tobook values(#{no}, #{bookNo})
+		]]>
+	</insert>
+
+	<update id="updateToBook" parameterType="tobookvo">
+		<![CDATA[
+			update tobook set BOOK_NO=#{bookNo} where no=#{no}
+		]]>
+	</update>
+	
+	<select id="selectToBook" resultType="java.lang.Integer">
+		<![CDATA[
+			select BOOK_NO from TOBOOK order by no asc
+		]]>
+	</select>
+
+	<select id="selectCount" resultType="java.lang.Integer">
+		<![CDATA[
+			select count(*) from tobook
+		]]>
+	</select>
+
+</mapper>

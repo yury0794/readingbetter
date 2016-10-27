@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="book">
+
+	<!-- 페이징 없는 책 리스트, 출판사 테이블에서  출판사명 가져옴, 작가 테이블에서 작가 이름 가져옴 -->
+	<select id="list" parameterType="bookvo" resultType="bookvo">
+		<![CDATA[
+			select a.no, a.title, a.recommend, a.cover, b.title as publisherTitle, 
+				   c.name as authorName 
+				from book a, publisher b, author c
+ 				where b.no=a.publisher_no and c.no=a.author_no and author_no !=0
+ 				order by a.no desc
+		]]>
+	</select>
+
+	<!-- 페이징, 검색 책 리스트, 출판사 테이블에서  출판사명 가져옴, 작가 테이블에서 작가 이름 가져옴 -->
+	<select id="listKwd" parameterType="bookvo" resultType="bookvo">
+		<![CDATA[
+			select * from (select rownum as rnum, c.no, c.title, c.recommend, 
+								  c.cover, c.publisherTitle, c.authorName 
+								from(select a.no, a.title, a.recommend, a.cover, 
+											b.title as publisherTitle, 
+											c.name as authorName 
+										from book a, publisher b,author c 
+ 										where b.no=a.publisher_no 
+ 											  and c.no=a.author_no 
+ 											  and author_no !=0 
+ 											  and a.title like '%' || #{bkwd} || '%' 
+ 										order by a.no) c)
+      			where (#{pageNo}-1)*5+1<=rnum and rnum<=#{pageNo}*5 
+		]]>
+	</select>
+
+	<!-- 기본키에 따른 책 조회, 출판사 테이블에서  출판사명 가져옴, 작가 테이블에서 작가 이름 가져옴 -->
+	<select id="getByNo" parameterType="long" resultType="bookvo">
+		<![CDATA[
+			select a.no, a.title, a.recommend, a.cover, 
+				   b.title as publisherTitle, c.name as authorName 
+				from book a, publisher b, author c
+ 				where b.no = a.publisher_no and 
+ 					  c.no = a.author_no and 
+ 					  a.no = #{no}
+		]]>
+	</select>
+
+	<!-- 검색 책 리스트 -->
+	<select id="findBook" parameterType="bookvo" resultType="bookvo">
+		<![CDATA[
+			select * 
+				from book 
+				where title like '%' || #{bkwd} || '%' and 
+					  author_no != 0
+				order by no asc
+		]]>
+	</select>
+	
+	<!-- 검색 책 리스트, 출판사 테이블에서  출판사명 가져옴, 작가 테이블에서 작가 이름 가져옴 -->
+	<select id="listService" parameterType="bookvo" resultType="bookvo">
+		<![CDATA[
+			select a.no, a.title, a.recommend, a.cover, b.title as publisherTitle,
+				   c.name as authorName 
+				from book a, publisher b,author c
+ 				where b.no=a.publisher_no and c.no=a.author_no and author_no !=0
+ 					  and a.title like '%' || #{bkwd} || '%' 
+ 				order by a.title
+		]]>
+	</select>
+	
+	<!-- 공백제거 검색 -->
+	<select id="findBookReplace" parameterType="string" resultType="bookvo">
+		<![CDATA[
+			select title, publisherTitle, authorName 
+				from (select b.title, 
+							 replace(b.title, ' ', '') as re_title, 
+							 p.TITLE as publisherTitle, 
+							 a.NAME as authorName 
+						from book b, publisher p, author a 
+						where b.PUBLISHER_NO = p.NO and b.AUTHOR_NO = a.NO) 
+				where re_title like '%' || #{kwd} || '%'
+		]]>
+	</select>
+
+	<!-- 페이징  관리자 리스트, 출판사 테이블에서  출판사명 가져옴, 작가 테이블에서 작가 이름 가져옴 -->
+	<select id="adminlistPage" parameterType="bookvo" resultType="bookvo">
+		<![CDATA[
+			select * 
+				from (select rownum as rnum,
+							 c.no,
+							 c.title,
+							 c.recommend,
+							 c.cover,
+							 c.publisherTitle,
+							 c.authorName 
+						from(select a.no, 
+									a.title, 
+									a.recommend, 
+									a.cover, 
+									b.title as publisherTitle, 
+									c.name as authorName 
+								from book a, publisher b, author c 
+ 								where b.no = a.publisher_no and 
+ 									  c.no = a.author_no 
+ 								order by a.no) c)
+      			where (#{pageNo} - 1) * 5 + 1 <= rnum and rnum <= #{pageNo} * 5  				
+		]]>
+	</select>
+	
+	<!-- 랜덤으로 5권의 책번호를 뽑아옴 -->
+	<select id="selectBookByRandom" resultType="long">
+		<![CDATA[
+			select no 
+				from (select * 
+						from book 
+						order by dbms_random.value) 
+				where rownum <= 5
+		]]>
+	</select>
+	
+	<!-- 오늘의 책 정보를 받아옴 -->
+	<select id="selectTodayBook" parameterType="java.lang.Integer" resultType="bookvo">
+		<![CDATA[
+			select no, title, cover 
+				from book 
+				where no=(select book_no 
+							from tobook 
+							where no=#{no})
+		]]>
+	</select>
+	
+	<!-- 책 추가 -->
+	<insert id="insert" parameterType="bookvo">
+		<![CDATA[
+			insert into book values(
+				seq_book.nextval, 
+				#{title}, 
+        		#{recommend}, 
+        		#{cover}, 
+				(select no from publisher where title = #{publisherTitle}),
+				(select no from author where name = #{authorName}))
+		]]>
+	</insert>
+	
+	<!-- 도서 수정 -->
+	<update id="updateBook" parameterType="bookvo">
+		<![CDATA[
+			update book 
+				set title = #{title}, 
+					RECOMMEND = #{recommend}, 
+					cover = #{cover}, 
+					PUBLISHER_NO = (select no from publisher where title = #{publisherTitle}), 
+					AUTHOR_NO = (select no from author where name = #{authorName}) 
+				where no = #{no}
+		]]>
+	</update>
+	
+</mapper>
