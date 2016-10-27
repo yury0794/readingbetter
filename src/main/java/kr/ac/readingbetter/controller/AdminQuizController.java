@@ -2,6 +2,8 @@ package kr.ac.readingbetter.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,7 @@ import kr.ac.readingbetter.service.HistoryService;
 import kr.ac.readingbetter.service.ScoresService;
 import kr.ac.readingbetter.vo.BookVo;
 import kr.ac.readingbetter.vo.HistoryVo;
+import kr.ac.readingbetter.vo.MemberVo;
 import kr.ac.readingbetter.vo.QuizVo;
 
 @Controller
@@ -98,7 +101,9 @@ public class AdminQuizController {
 	
 	// 퀴즈 추가
 	@RequestMapping(value = "/quizadd", method = RequestMethod.POST)
-	public String quizAddAdmin(@ModelAttribute QuizVo vo) {
+	public String quizAddAdmin(@ModelAttribute QuizVo vo, HttpSession session) {
+		MemberVo authUser = (MemberVo) session.getAttribute("authUser");
+		vo.setMemberNo(authUser.getNo());
 		adminQuizService.quizAdd(vo);
 		return "redirect:/admin/quizlist";
 	}
